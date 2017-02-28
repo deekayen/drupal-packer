@@ -1,0 +1,59 @@
+---
+
+- name: "Set hostname."
+  hostname:
+    name: "{{ guardr_hostname | default('guardr') }}"
+
+- name: "Update packages."
+  apt:
+    upgrade: safe
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == 'Debian'
+
+- name: "Install system utilities."
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - bzip2
+    - curl
+    - diffutils
+    - dnsutils
+    - findutils
+    - git
+    - git-core
+    - gzip
+    - htop
+    - lynx
+    - nano
+    - nmap
+    - openssl
+    - openssh-client
+    - openssh-server
+    - openssh-sftp-server
+    - p7zip
+    - patch
+    - rsync
+    - screen
+    - sed
+    - sysbench
+    - tar
+    - tcpdump
+    - telnet
+    - traceroute
+    - unrar-free
+    - unzip
+    - vim
+    - wget
+    - xz-utils
+    - zip
+    - zoo
+
+- name: Upload a new motd.
+  copy:
+    src: motd
+    dest: /etc/motd
+    owner: root
+    group: root
+    mode: 644

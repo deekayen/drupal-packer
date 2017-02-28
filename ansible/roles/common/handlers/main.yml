@@ -1,3 +1,0 @@
----
-- name: update motd
-  command: /usr/sbin/update-motd

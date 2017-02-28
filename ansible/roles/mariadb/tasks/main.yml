@@ -1,0 +1,30 @@
+---
+
+- name: Install Python software properties
+  apt:
+    name: python-software-properties
+    state: latest
+
+- name: Check if MariaDB is already installed.
+  stat:
+    path: /etc/init.d/mysql
+  register: mariadb_installed
+
+- name: Update apt cache if MariaDB is not yet installed.
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: mariadb_installed.stat.exists == false
+
+- name: Install MariaDB.
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - mariadb-server
+    - mariadb-client
+    - mariadb-common
+    - python-mysqldb
+  register: mariadb_install_packages
+
+- include: secure-mariadb.yml

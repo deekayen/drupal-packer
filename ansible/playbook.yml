@@ -1,6 +1,22 @@
 ---
+
 - hosts: all
-  sudo: yes
+  become: yes
+  gather_facts: no
+
+  pre_tasks:
+    - name: "apt-get update"
+      raw: apt-get update
+
+    - name: 'Install Python.'
+      raw: apt-get -y install python python-simplejson aptitude
+
+- hosts: all
+  become: yes
 
   roles:
-    - common
+    - system
+    - apache
+    - php
+    - mariadb
+    - drupal

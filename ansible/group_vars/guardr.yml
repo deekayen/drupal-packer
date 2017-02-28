@@ -1,0 +1,10 @@
+---
+ansible_ssh_user: ubuntu
+
+guardr_hostname: guardr
+
+# Usable for Apache and misc server reports
+server_admin: nobody@example.com
+
+# Possible values include: debug, info, notice, warn, error, crit, alert, emerg.
+apache_log_level: error
