@@ -1,5 +1,11 @@
 ---
 
+- name: "Add drupal hostname to /etc/hosts."
+  replace:
+    path: /etc/hosts
+    regexp: '^(127.0.0.1\s+localhost)$'
+    replace: "\\1 {{ drupal_hostname }}"
+
 - name: Check if drush is installed.
   stat:
     path: /usr/local/bin/drush

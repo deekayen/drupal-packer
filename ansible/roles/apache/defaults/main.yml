@@ -1,0 +1,4 @@
+---
+
+# Possible values include: debug, info, notice, warn, error, crit, alert, emerg.
+apache_log_level: error
