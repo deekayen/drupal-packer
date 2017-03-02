@@ -1,6 +1,6 @@
 ---
 
-- name: Install Python software properties
+- name: Install Python software properties.
   apt:
     name: python-software-properties
     state: latest
