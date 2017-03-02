@@ -26,30 +26,17 @@
     path: /var/www/drupal/sites/default/settings.php
   register: drupal_settings
 
-- name: Install random password generator.
-  apt:
-    name: pwgen
-    state: present
-  when: drupal_settings.stat.exists == False
-
-- name: Generate a random database root password.
-  shell: pwgen -B -s 24 1
-  register: drupal_mysql_password
-  ignore_errors: false
-  when: drupal_settings.stat.exists == False
-
 - name: Create a MySQL user for Drupal.
   mysql_user:
     name: "{{ drupal_mysql_user }}"
     host: "{{ item }}"
     priv: "{{ drupal_mysql_database }}.*:ALL"
-    password: "{{ drupal_mysql_password.stdout }}"
+    password: "{{ drupal_mysql_password }}"
     update_password: always
   with_items:
     - 127.0.0.1
     - ::1
     - localhost
-  when: drupal_mysql_password.changed == True
 
 - name: Remove previous temporary clones.
   file:
@@ -83,23 +70,10 @@
     path: /tmp/build
     state: absent
 
-- name: "Install {{ drupal_install_profile }}."
-  shell: >
-    drush si {{ drupal_install_profile }} -y
-    --site-name="{{ drupal_site_name | quote }}"
-    --account-name={{ drupal_admin_name | quote }}
-    --account-pass={{ drupal_admin_password | quote}}
-    --account-mail={{ drupal_admin_email | quote }}
-    --site-mail={{ drupal_admin_email | quote }}
-    --db-url=mysql://{{ drupal_mysql_user }}:{{ drupal_mysql_password.stdout }}@localhost/{{ drupal_mysql_database }}
-  args:
-    chdir: /var/www/drupal
-    creates: /var/www/drupal/sites/default/settings.php
-  when: drupal_mysql_password.changed == True
-
 - name: Set restricted permissions on settings.php.
-  file:
-    path: "/var/www/drupal/sites/default/settings.php"
+  template:
+    src: settings.php.j2
+    dest: "/var/www/drupal/sites/default/settings.php"
     mode: 0744
 
 - name: Set global permissions on files directory.
@@ -109,10 +83,16 @@
     state: directory
     recurse: yes
 
+# https://www.drupal.org/SA-CORE-2013-003
+- name: Create file upload .htaccess file.
+  copy:
+    src: files_htaccess.conf
+    dest: "/var/www/drupal/sites/default/files/.htaccess"
+
 - name: Add Apache virtualhost for Drupal.
   template:
     src: drupal-vhost.conf.j2
-    dest: "/etc/apache2/sites-available/{{ drupal_domain }}.conf"
+    dest: "/etc/apache2/sites-available/drupal.conf"
     owner: root
     group: root
     mode: 0644
@@ -120,15 +100,15 @@
 - name: Add Apache SSL virtualhost for Drupal.
   template:
     src: drupal-ssl-vhost.conf.j2
-    dest: "/etc/apache2/sites-available/{{ drupal_domain }}-ssl.conf"
+    dest: "/etc/apache2/sites-available/drupal-ssl.conf"
     owner: root
     group: root
     mode: 0644
 
 - name: Enable Drupal vhost.
-  command: "a2ensite {{ drupal_domain }}"
+  command: "a2ensite drupal"
   notify: restart webserver
 
 - name: Enable Drupal SSL vhost.
-  command: "a2ensite {{ drupal_domain }}-ssl"
+  command: "a2ensite drupal-ssl"
   notify: restart webserver

@@ -1,7 +1,5 @@
 <VirtualHost *:80>
-    ServerAdmin {{ apache_server_admin }}
-    ServerName {{ drupal_domain }}
-    ServerAlias www.{{ drupal_domain }}
+    ServerName guardr
     DocumentRoot /var/www/drupal
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined

@@ -1,0 +1,40 @@
+---
+
+- name: Install unattended-upgrades.
+  apt:
+    name: unattended-upgrades
+    state: latest
+
+- name: Remove packages with known issues.
+  apt:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - rsh-server
+    - telnetd
+    - traceroute
+
+- name: Enable strict sysctl network setttings.
+  sysctl:
+    name: "{{ item }}"
+    value: 1
+  with_items:
+    - net.ipv4.conf.all.rp_filter
+    - net.ipv4.icmp_echo_ignore_broadcasts
+    - net.ipv4.icmp_ignore_bogus_error_responses
+    - net.ipv4.conf.all.log_martians
+
+- name: Disable network redirects in sysctl.
+  sysctl:
+    name: "{{ item }}"
+    value: 0
+  with_items:
+    - net.ipv4.conf.all.send_redirects
+    - net.ipv4.conf.default.accept_redirects
+    - net.ipv6.conf.default.accept_redirects
+
+- name: Ensure ssh strict mode is explicitly set.
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: "StrictModes yes"
+    state: present

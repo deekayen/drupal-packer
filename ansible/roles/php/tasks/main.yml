@@ -17,6 +17,7 @@
     - php-fpm
     - php-gd
     - php-json
+    - php-mbstring
     - php-mcrypt
     - php-mysql
 

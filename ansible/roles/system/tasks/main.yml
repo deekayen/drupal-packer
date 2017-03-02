@@ -37,11 +37,8 @@
     - rsync
     - screen
     - sed
-    - sysbench
     - tar
     - tcpdump
-    - telnet
-    - traceroute
     - unrar-free
     - unzip
     - vim
@@ -57,3 +54,7 @@
     owner: root
     group: root
     mode: 644
+
+- include: debian/security.yml
+  when: ansible_os_family == 'Debian'
+
