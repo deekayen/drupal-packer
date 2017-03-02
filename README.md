@@ -16,8 +16,7 @@
 * Install [Packer](http://www.packer.io) on your local machine.  If you're on a
   Mac and use Homebrew then the easiest way is to use
   [Cask](http://caskroom.io):
-    - `brew install caskroom/cask/brew-cask`
-    - `brew cask install packer`
+    - `brew install packer`
 
 ### AWS Credentials
 
@@ -34,8 +33,4 @@ An example IAM policy for the Packer user is supplied:
 Building an EC2 AMI is as simple as:
 
 * `packer build awsne-packer.json`
-* Grab a coffee.
-
-## Authors
-
-Ross Timson <ross@rosstimson.com>
+* Grab a hot chocolate.
