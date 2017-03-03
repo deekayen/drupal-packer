@@ -14,8 +14,9 @@
     - apache2-bin
     - apache2-data
     - apache2-utils
-    - libapache2-mod-fastcgi
     - apachetop
+    - libapache2-mod-security2
+    - libapache2-mod-spamhaus
 
 - name: Enable Apache headers module.
   apache2_module:
@@ -61,10 +62,18 @@
   when: apache_httpd_conf.stat.islnk is not defined
 
 - name: Set ServerSignature.
-  lineinfile: dest=/etc/apache2/conf-available/security.conf regexp="^ServerSignature " line="ServerSignature Off" state=present
+  lineinfile:
+    dest: /etc/apache2/conf-available/security.conf
+    regexp: "^ServerSignature "
+    line: "ServerSignature Off"
+    state: present
 
 - name: Set ServerTokens.
-  lineinfile: dest=/etc/apache2/conf-available/security.conf regexp="^ServerTokens " line="ServerTokens Prod" state=present
+  lineinfile:
+    dest: /etc/apache2/conf-available/security.conf
+    regexp: "^ServerTokens "
+    line: "ServerTokens Prod"
+    state: present
 
 - name: Check for deflate module.
   stat:
@@ -80,11 +89,3 @@
   apache2_module:
     state: present
     name: ssl
-
-- name: Copy fastcgi configuration.
-  copy:
-    src: fastcgi.conf
-    dest: /etc/apache2/mods-available/fastcgi.conf
-    owner: root
-    group: root
-    mode: 644
