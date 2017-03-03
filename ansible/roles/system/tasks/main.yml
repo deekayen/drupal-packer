@@ -2,7 +2,7 @@
 
 - name: "Set hostname."
   hostname:
-    name: "{{ guardr_hostname | default('guardr') }}"
+    name: "{{ drupal_hostname | default('drupal') }}"
 
 - name: "Update packages."
   apt:
