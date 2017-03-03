@@ -2,7 +2,7 @@
 
 - name: "Add drupal hostname to /etc/hosts."
   replace:
-    path: /etc/hosts
+    dest: /etc/hosts
     regexp: '^(127.0.0.1\s+localhost)$'
     replace: "\\1 {{ drupal_hostname }}"
 
