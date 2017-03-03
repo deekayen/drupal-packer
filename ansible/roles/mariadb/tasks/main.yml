@@ -27,4 +27,12 @@
     - python-mysqldb
   register: mariadb_install_packages
 
+- name: Enable multi-byte UTF-8 support in Drupal 7.
+  copy:
+    src: drupal.conf
+    dest: /etc/mysql/conf.d/drupal.conf
+    owner: root
+    group: root
+    mode: 0644
+
 - include: secure-mariadb.yml
